@@ -64,34 +64,26 @@
    <section class="contact" id="contact">
   <h2>Contact Us</h2>
      
-    <form action="https://formspree.io/f/mnjrppwe" method="POST">
+    <form action="https://formspree.io/f/mnjrppwe" method="POST" data-ajax="true" id="contact-form">
   <input type="text" name="name" placeholder="Your Name" required>
   <input type="email" name="email" placeholder="Your Email" required>
   <textarea name="message" placeholder="Your Message" required></textarea>
-  
-  
   <button type="submit">Get Started</button>
 </form>
-</section> 
-  <section class="features">
-    <div class="card">
-      <h3>24/7 Access</h3>
-      <p>Train anytime that fits your schedule.</p>
-    </div>
-    <div class="card">
-      <h3>Personal Trainers</h3>
-      <p>Get expert guidance and faster result.</p>
-    </div>
-    <div class="card">
-      <h3>Group Classes</h3>
-      <p>Yoga, HIIT, and more with your friends.</p>
-    </div>
-  </section>
 
-  <footer>
-    <p>© 2026 Nexa Fitness</p>
-  </footer>
-
-
-</body>
-</html>
+<script>
+document.getElementById("contact-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  fetch(this.action, {
+    method: "POST",
+    body: new FormData(this),
+    headers: { "Accept": "application/json" }
+  }).then(response => {
+    if (response.ok) {
+      window.location.href = "/Nexa-fitness-/thank-you.html";
+    } else {
+      alert("Something went wrong. Try again.");
+    }
+  });
+});
+</script>
