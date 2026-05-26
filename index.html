@@ -5,28 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexa Fitness</title>
     <link rel="stylesheet" href="style.css">
-
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ff4500">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="apple-touch-icon" href="icon-192.png">
-</head>  
+    <meta name="theme-color" content="#ff4500">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon" href="icon-192.png">
+</head>
 <body>
 
     <!-- Hero Section -->
     <section id="home">
-        <!-- Today's Workout Section -->
-<section id="today">
-    <h2>Today's Workout</h2>
-    <div id="workout-card" class="card">
-        <p id="loading">Loading workout...</p>
-    </div>
-</section>
         <h1>Nexa Fitness</h1>
         <p>Transform your body, elevate your life</p>
         <a href="#plans" class="btn">View Plans</a>
+    </section>
+
+    <!-- Today's Workout Section -->
+    <section id="today">
+        <h2>Today's Workout</h2>
+        <div id="workout-card" class="card">
+            <p>Loading workout...</p>
+        </div>
     </section>
 
     <!-- Plans Section -->
@@ -47,16 +47,47 @@
     <!-- Contact Section -->
     <section id="contact">
         <h2>Contact Us</h2>
-    <form action="https://formspree.io/f/mnjrppwe" method="POST">
-    <input type="hidden" name="_next" value="https://done-johnny.github.io/done-johnny.github.io-Nexa-fitness-/thank-you.html">
-    <input type="text" name="name" placeholder="Enter your name" required>
-    <input type="email" name="email" placeholder="Enter your email" required>
-    <input type="tel" name="phone" placeholder="Enter your phone" required>
-    <button type="submit">Submit</button>
-</form>
+        <form action="https://formspree.io/f/mnjrppwe" method="POST">
+            <input type="hidden" name="_next" value="https://done-johnny.github.io/done-johnny.github.io-Nexa-fitness-/thank-you.html">
+            <input type="text" name="name" placeholder="Enter your name" required>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <input type="tel" name="phone" placeholder="Enter your phone" required>
+            <button type="submit">Submit</button>
+        </form>
     </section>
 
 <script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/1p6fkk3GOdjAXQAG9622ukqVSn80e99CBnJsjQOjfIvk/export?format=csv";
+
+function getToday() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+async function loadWorkout() {
+    const card = document.getElementById('workout-card');
+    try {
+        const res = await fetch(CSV_URL);
+        const text = await res.text();
+        const rows = text.trim().split('\n').map(r => r.split(','));
+        const today = getToday();
+        const todayRow = rows.slice(1).find(row => row[0].trim() === today);
+        
+        if (todayRow) {
+            card.innerHTML = `
+                <h3>${todayRow[1]}</h3>
+                <p><strong>Exercise:</strong> ${todayRow[2]}</p>
+                <p><strong>Sets x Reps:</strong> ${todayRow[3]}</p>
+            `;
+        } else {
+            card.innerHTML = `<p>No workout scheduled for ${today}</p>`;
+        }
+    } catch (err) {
+        card.innerHTML = `<p>Error loading workout. Check sheet sharing.</p>`;
+    }
+}
+loadWorkout();
+
 document.querySelector('form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const form = e.target;
