@@ -200,3 +200,26 @@ footer {
     font-size: 1.8rem;
   }
 }
+#workout-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+#workout-card.video {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    margin-top: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+#workout-card.video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
