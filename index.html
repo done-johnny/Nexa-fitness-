@@ -83,14 +83,14 @@ async function loadWorkout() {
             const [date, category, exercise, sets, image, video] = todayRow.map(c => c.trim());
             const ytID = getYouTubeID(video);
 
-            card.innerHTML = `
-                ${image? `<img src="${image}" alt="${exercise}">` : ''}
-                <h3>${category}</h3>
-                <p><strong>Exercise:</strong> ${exercise}</p>
-                <p><strong>Sets x Reps:</strong> ${sets}</p>
-                ${ytID? `<div class="video"><iframe src="https://www.youtube.com/embed/${ytID}" allowfullscreen></iframe>
-            
-        } else {
+    card.innerHTML = `
+    ${image? `<img src="${image}" alt="${exercise}">` : ''}
+    <h3>${category}</h3>
+    <p><strong>Exercise:</strong> ${exercise}</p>
+    <p><strong>Sets x Reps:</strong> ${sets}</p>
+    ${ytID? `<div class="video"><iframe src="https://www.youtube.com/embed/${ytID}" allowfullscreen></iframe></div>` : ''}
+`;
+} else {
             card.innerHTML = `<p>No workout scheduled for ${today}</p>`;
         }
     } catch (err) {
