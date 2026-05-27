@@ -1,21 +1,33 @@
-{
-  "name": "Nexa Fitness",
-  "short_name": "Nexa",
-  "description": "Contact Nexa Fitness",
-  "start_url": ".",
-  "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#ff4500",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+function getYouTubeID(url) {
+    if (!url) return '';
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/);
+    return match? match[1] : '';
+}
+
+async function loadWorkout() {
+    const card = document.getElementById('workout-card');
+    try {
+        const res = await fetch(CSV_URL);
+        const text = await res.text();
+        const rows = text.trim().split('\n').map(r => r.split(','));
+        const today = getToday();
+        const todayRow = rows.slice(1).find(row => row[0].trim() === today);
+        
+        if (todayRow) {
+            const [date, category, exercise, sets, image, video] = todayRow.map(c => c.trim());
+            const ytID = getYouTubeID(video);
+            
+            card.innerHTML = `
+                ${image? `<img src="${image}" alt="${exercise}">` : ''}
+                <h3>${category}</h3>
+                <p><strong>Exercise:</strong> ${exercise}</p>
+                <p><strong>Sets x Reps:</strong> ${sets}</p>
+                ${ytID? `<div class="video"><iframe src="https://www.youtube.com/embed/${ytID}" allowfullscreen></iframe></div>` : ''}
+            `;
+        } else {
+            card.innerHTML = `<p>No workout scheduled for ${today}</p>`;
+        }
+    } catch (err) {
+        card.innerHTML = `<p>Error loading workout. Check sheet sharing.</p>`;
     }
-  ]
 }
