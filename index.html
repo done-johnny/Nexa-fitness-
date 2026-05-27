@@ -89,7 +89,7 @@ async function loadWorkout() {
                 <p><strong>Exercise:</strong> ${exercise}</p>
                 <p><strong>Sets x Reps:</strong> ${sets}</p>
                 ${ytID? `<div class="video"><iframe src="https://www.youtube.com/embed/${ytID}" allowfullscreen></iframe></div>` : ''}
-            `;
+            
         } else {
             card.innerHTML = `<p>No workout scheduled for ${today}</p>`;
         }
