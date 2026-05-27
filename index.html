@@ -64,6 +64,12 @@ function getToday() {
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 
+function getYouTubeID(url) {
+    if (!url) return '';
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/);
+    return match? match[1] : '';
+}
+
 async function loadWorkout() {
     const card = document.getElementById('workout-card');
     try {
@@ -72,12 +78,17 @@ async function loadWorkout() {
         const rows = text.trim().split('\n').map(r => r.split(','));
         const today = getToday();
         const todayRow = rows.slice(1).find(row => row[0].trim() === today);
-        
+
         if (todayRow) {
+            const [date, category, exercise, sets, image, video] = todayRow.map(c => c.trim());
+            const ytID = getYouTubeID(video);
+
             card.innerHTML = `
-                <h3>${todayRow[1]}</h3>
-                <p><strong>Exercise:</strong> ${todayRow[2]}</p>
-                <p><strong>Sets x Reps:</strong> ${todayRow[3]}</p>
+                ${image? `<img src="${image}" alt="${exercise}">` : ''}
+                <h3>${category}</h3>
+                <p><strong>Exercise:</strong> ${exercise}</p>
+                <p><strong>Sets x Reps:</strong> ${sets}</p>
+                ${ytID? `<div class="video"><iframe src="https://www.youtube.com/embed/${ytID}" allowfullscreen></iframe></div>` : ''}
             `;
         } else {
             card.innerHTML = `<p>No workout scheduled for ${today}</p>`;
@@ -88,25 +99,7 @@ async function loadWorkout() {
 }
 loadWorkout();
 
-document.querySelector('form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const form = e.target;
-    const data = new FormData(form);
-    try {
-        const res = await fetch(form.action, {
-            method: 'POST',
-            body: data,
-            headers: { 'Accept': 'application/json' }
-        });
-        if (res.ok) {
-            window.location.href = 'https://done-johnny.github.io/done-johnny.github.io-Nexa-fitness-/thank-you.html';
-        } else {
-            alert('Something went wrong. Please try again.');
-        }
-    } catch (error) {
-        alert('Network error. Please try again.');
-    }
-});
+// Your Formspree code here
 </script>
 </body>
 </html>
