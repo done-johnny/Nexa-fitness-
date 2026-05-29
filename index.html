@@ -56,54 +56,36 @@
         </form>
     </section>
 
+<form id="contact-form">
+  <input type="text" name="name" placeholder="Enter your name" required>
+  <input type="email" name="email" placeholder="Enter your email" required>
+  <input type="tel" name="phone" placeholder="Enter your phone" required>
+  <button type="submit">Submit</button>
+</form>
+
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/1p6fkk3GOdjAXQAG9622ukqVSn80e99CBnJsjQOjfIvk/export?format=csv";
-
-function getToday() {
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-}
-
-function getYouTubeID(url) {
-    if (!url) return '';
-    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/);
-    return match? match[1] : '';
-}
-
-async function loadWorkout() {
-    const card = document.getElementById('workout-card');
-    try {
-        const res = await fetch(CSV_URL);
-        const text = await res.text();
-        const rows = text.trim().split('\n').map(r => r.split(','));
-        const today = getToday();
-        const todayRow = rows.slice(1).find(row => row[0].trim() === today);
-
-        if (todayRow) {
-            const [date, category, exercise, sets, image, video] = todayRow.map(c => c.trim());
-            const ytID = getYouTubeID(video);
-
-    card.innerHTML = `
-    ${image? `<img src="${image}" alt="${exercise}">` : ''}
-    <h3>${category}</h3>
-    <p><strong>Exercise:</strong> ${exercise}</p>
-    <p><strong>Sets x Reps:</strong> ${sets}</p>
-    ${ytID? `<div class="video"><iframe src="https://www.youtube.com/embed/${ytID}" allowfullscreen></iframe></div>` : ''}
-`;
-} else {
-            card.innerHTML = `<p>No workout scheduled for ${today}</p>`;
-        }
-    } catch (err) {
-        card.innerHTML = `<p>Error loading workout. Check sheet sharing.</p>`;
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = new FormData(form);
+  
+  try {
+    const res = await fetch('https://formspree.io/f/mnjrppwe', {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    });
+    
+    if (res.ok) {
+      alert('Thanks! We got your message and will reply within 24 hours.');
+      form.reset();
+    } else {
+      alert('Oops! There was a problem submitting your form');
     }
-}
-loadWorkout();
-
-// Formspree success popup  <!-- ← CHANGE THIS -->
-if(window.location.search.includes('submitted=true')) {
-  alert('Thanks! We got your message and will reply within 24 hours.');
-  history.replaceState(null, '', window.location.pathname + '#contact');
-}
+  } catch (err) {
+    alert('Oops! There was a problem submitting your form');
+  }
+});
 </script>
 </body>
 </html>
