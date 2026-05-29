@@ -48,7 +48,7 @@
     <section id="contact">
         <h2>Contact Us</h2>
         <form action="https://formspree.io/f/mnjrppwe" method="POST">
-            <input type="hidden" name="_next" value="https://done-johnny.github.io/done-johnny.github.io-Nexa-fitness-/#contact?submitted=true">
+            <input type="hidden" name="_next" value="https://done-johnny.github.io/done-johnny.github.io-Nexa-fitness-/#contact?submitted=true">  <!-- ← CHANGE THIS -->
             <input type="text" name="name" placeholder="Enter your name" required>
             <input type="email" name="email" placeholder="Enter your email" required>
             <input type="tel" name="phone" placeholder="Enter your phone" required>
@@ -99,7 +99,11 @@ async function loadWorkout() {
 }
 loadWorkout();
 
-// Your Formspree code here
+// Formspree success popup  <!-- ← CHANGE THIS -->
+if(window.location.search.includes('submitted=true')) {
+  alert('Thanks! We got your message and will reply within 24 hours.');
+  history.replaceState(null, '', window.location.pathname + '#contact');
+}
 </script>
 </body>
 </html>
